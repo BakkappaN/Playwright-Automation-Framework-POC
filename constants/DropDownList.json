@@ -1,0 +1,8 @@
+{
+    "DropDownList": {
+        "TrnsactionType": {
+            "Transfer": "Transfer",
+            "Value2": "Value2"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "CommonSelector": {
+        "Label": {
+            "AppName": "App Name:"
+        },
+        "Text": {},
+        "Buttons": {
+            "Login": "Login"
+        },
+        "Textbox": {
+            "Username": "Username",
+            "Password": "Password"
+        },
+        "Placeholder": {},
+        "CSS": {},
+        "Xpath": {}
+    }
+}

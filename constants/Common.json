@@ -1,0 +1,20 @@
+{
+    "Common": {
+        "TestUsers": {
+            "UserName": "TestersTalk",
+            "Password": "TestersTalk",
+            "User2": "User2",
+            "Pass2": "Pass2"
+        },
+        "URL": {
+            "DevURL": "https://bakkappan.github.io/Testers-Talk-Practice-Site/",
+            "TestURL": "https://bakkappan.github.io/Testers-Talk-Practice-Site/"
+        },
+        "Appname": {
+            "Banking": "Banking"
+        },
+        "EmailId": {
+            "Email1": "example@test.com"
+        }
+    }
+}

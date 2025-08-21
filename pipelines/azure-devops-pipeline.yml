@@ -1,0 +1,40 @@
+jobs:
+  - job: test
+    timeoutInMinutes: 60
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "22.x"
+        displayName: "Install NodeJS"
+
+      - script: npm ci && npm install && npx playwright install
+        workingDirectory: "$(Build.SourcesDirectory)/TestFolder"
+        displayName: "Install dependencies"
+
+      - script: npx playwright test --grep SmokeTesting
+        workingDirectory: "$(Build.SourcesDirectory)/TestFolder"
+        displayName: "Run Playwright tests"
+        env:
+          # AZURE_CLIENT_ID: $(azureClientId)
+          # AZURE_TENANT_ID: $(azureTenantId)
+          # AZURE_CLIENT_SECRET: $(azureClientSecret)
+          CI: true
+
+      - task: PublishBuildArtifacts@1
+        condition: succeededOrFailed()
+        inputs:
+          PathtoPublish: "$(Build.SourcesDirectory)/TestFolder/playwright-report"
+          ArtifactName: "TestResults"
+          publishLocation: "Container"
+        displayName: "Publish Artifacts"
+
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFormat: "JUnit"
+          testResultsFiles: "$(Build.SourcesDirectory)/TestFolder/junit-test-results.xml"
+          mergeTestResults: true
+          failIfNoResults: true
+        displayName: "Publish Test Results"

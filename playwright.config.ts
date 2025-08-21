@@ -4,17 +4,22 @@ import { defineConfig, devices } from '@playwright/test';
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   testDir: './tests',
-  // Test timeout
-  timeout: 1 * 60 * 1000,
+
+  /* Maximum time all test run */
+  globalTimeout: 3 * 60 * 60 * 1000,
+
+  /* Default timeout for each test. */
+  timeout: 2 * 60 * 1000,
+
   // Assertion timeout
   expect: {
     timeout: 30000
@@ -28,7 +33,11 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['json', { outputFile: 'json-test-results.json' }],
+    ['junit', { outputFile: 'junit-test-results.xml' }],
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     headless: false,
@@ -37,14 +46,26 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
+    actionTimeout: 30000,
+    video: 'on',
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        ignoreHTTPSErrors: true,
+        acceptDownloads: true,
+        // Launch options for Chromium
+        // launchOptions: {
+        //   slowMo: 0,
+        //args: ["--start-maximized", "--disable-web-security", "--disable-features=IsolateOrigins,site-per-process"],
+        //},
+      },
     },
 
     // {

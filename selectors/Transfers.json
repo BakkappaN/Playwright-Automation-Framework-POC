@@ -1,0 +1,28 @@
+{
+    "TransfersSelector": {
+        "Label": {
+            "TransactionType": "Transaction Type:"
+        },
+        "Textbox": {
+            "TransferAccount": "Transfer to Account: *",
+            "Description": "Description: *"
+        },
+        "Text": {
+            "TransactionReference": "Transaction Reference: TXN-"
+        },
+        "Buttons": {
+            "Amount": "Amount ($): *",
+            "Submit": "Submit",
+            "Confirm": "Confirm",
+            "ViewHistory": "View History"
+        },
+        "Placeholder": {},
+        "CSS": {
+            "TransactionHistory": "#transactionHistory"
+        },
+        "Xpath": {},
+        "Links": {
+            "QuickTransactions": "💳 Quick Transactions"
+        }
+    }
+}
