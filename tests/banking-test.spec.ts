@@ -1,58 +1,51 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "../fixtures/TestFixture";
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
-import { QuickTransactionPage } from '../pages/QuickTransactionPage';
-import { TransactionHistoryPage } from '../pages/TransactionHistoryPage';
-import config from '../config.json';
 
+import config from '../config.json';
 import transferData from '../test-data/Transfer_TestData.json';
 
-test('Verify Quick Transactions Flow', async ({ page }) => {
-    // Page Object Instantiations
-    const loginPage = new LoginPage(page);
-    const homePage = new HomePage(page);
-    const quickTransactionPage = new QuickTransactionPage(page);
-    const transactionHistoryPage = new TransactionHistoryPage(page);
+test('Verify Quick Transactions Flow', async ({ page, loginPage, homePage, quickTransactionPage, transactionHistoryPage }) => {
 
-    // Step 1: Login
-    await loginPage.goto(config.url);
-    await loginPage.login(config.username, config.password, config.appName);
+    let txnRef: string;
 
-    // Step 2: Home Page Verification
-    await homePage.verifyHomePage();
+    await test.step('Login to the application', async () => {
+        await loginPage.loginToApplication(config.url, config.username, config.password, config.appName);
+    });
 
-    // Step 3: Quick Transaction Flow
-    await homePage.clickQuickTransactions();
-    await quickTransactionPage.selectTransactionType(transferData.transactionType);
-    await quickTransactionPage.fillTransactionDetails(
-        transferData.amount.toString(),
-        transferData.transferToAccount,
-        transferData.description
-    );
-    await quickTransactionPage.submitTransaction();
-    const txnRef = await quickTransactionPage.getTransactionReference();
-    expect(txnRef).toMatch(/TXN-\d+/);
+    await test.step('Home Page Verification', async () => {
+        await homePage.verifyHomePage();
+    });
 
-    // Step 4: Transaction History Verification
-    await transactionHistoryPage.openHistory();
-    await transactionHistoryPage.verifyTransactionReference(txnRef);
+    await test.step('Quick Transaction Flow', async () => {
+        await homePage.clickQuickTransactions();
+        await quickTransactionPage.selectTransactionType(transferData.transactionType);
+        await quickTransactionPage.fillTransactionDetails(transferData.amount.toString(),
+            transferData.transferToAccount, transferData.description
+        );
+        await quickTransactionPage.submitTransaction();
+        txnRef = await quickTransactionPage.getTransactionReference();
+        expect(txnRef).toMatch(/TXN-\d+/);
+    });
+
+    await test.step('Transaction History Verification', async () => {
+        await transactionHistoryPage.openHistory();
+        await transactionHistoryPage.verifyTransactionReference(txnRef);
+    });
 });
 
-test('Verify tab names in the homepage', async ({ page }) => {
-    // Instantiate page objects
-    const loginPage = new LoginPage(page);
-    const homePage = new HomePage(page);
+test('Verify tab names in the homepage', async ({ page, loginPage, homePage, }) => {
 
-    // Step 1: Navigate to login page
-    await loginPage.goto(config.url);
+    await test.step('Login to the application', async () => {
+        await loginPage.loginToApplication(config.url, config.username, config.password, config.appName);
+    });
 
-    // Step 2: Login
-    await loginPage.login(config.username, config.password, config.appName);
+    await test.step('Home Page Verification', async () => {
+        await homePage.verifyHomePage();
+    });
 
-    // Step 3: Verify home page loads
-    await homePage.verifyHomePage();
-
-    // Step 4: Check that Transfers & Bill Payment tabs are visible
-    await expect(page.getByRole('button', { name: 'Transfers' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Bill Payments' })).toBeVisible();
+    await test.step('Check that Transfers & Bill Payment tabs are visible', async () => {
+        await expect(page.getByRole('button', { name: 'Transfers' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Bill Payments' })).toBeVisible();
+    });
 });

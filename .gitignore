@@ -7,3 +7,4 @@ node_modules/
 /playwright/.cache/
 json-test-results.json
 junit-test-results.xml
+.DS_Store
